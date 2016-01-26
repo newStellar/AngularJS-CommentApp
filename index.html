@@ -4,10 +4,12 @@
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css">
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+
   <script src="script.js" charset="utf-8"></script>
   <script src="services.js" charset="utf-8"></script>
 </head>
@@ -15,10 +17,8 @@
 
 <style media="screen">
 
-.wrapper {
-    height: 300px;
-    overflow-y: scroll auto;
-
+.shrink{
+    padding: 5px;
 }
 
 </style>
@@ -32,13 +32,13 @@
         </div>
         <div class="row">
             <div class="col-md-3"></div>
-            <div class="col-md-6 span12">
+            <div class="col-md-6 ">
                 <ul class="list-group" style="border-radius:0px">
                     <div  style ="border: 1px solid #E0E0E0">
                       <li class="list-group-item" style ="border: 0px" ng-repeat = "comment in commentList">
                           <p ng-hide= "checkEditStatus($index)"><a href="#">{{comment.author}} </a>: {{comment.msg}}</p>
                           <div class = "row" ng-show="checkEditStatus($index)?true:false">
-                              <a class = "col-sm-12" href="#">{{comment.author}} :</a> 
+                              <a class = "col-sm-12" href="#">{{comment.author}} :</a>
                               <div class="col-sm-12">
                                   <textarea class=" form-control" rows=3 id="comment" style= "resize:none" placeholder="Write a comment ....."
                                               ng-model = "commentEditEnable.msg"
@@ -57,16 +57,24 @@
                       <li class="list-group-item">
                           <textarea class="form-control" rows="{{rowSize}}" id="comment" style= "resize:none" placeholder="Write a comment ....."
                                       ng-model = "message"
-                                      my-enter="addComment('nahid')"
+                                      my-enter= "addComment('nahid')"
                                       ng-change="testEnter()"
-                                      value = "kay">
+                                      bs-options="state for state in states"
+                                      value = "kay" bs-typeahead>
                           </textarea>
-                      </li>
+                      </li >
+                  </div>
+                  <div class="col-sm-3"></div>
+                  <div class="list-group col-sm-6" ng-show ="userTag">
+                    <a href="#" class="list-group-item shrink"
+                       ng-repeat = "x in friendList"
+                       ng-click = "getSuggestion($index)" >{{x}}</a>
+
                   </div>
                 </ul>
             </div>
-            <div class="col-md-3"></div>
         </div>
+
     </div>
 
 
