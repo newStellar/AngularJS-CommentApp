@@ -29,10 +29,13 @@ app.controller("myCtrl",function($scope){
         console.log(tmpMsg+"__"+msg+"-->"+msg[msg.length-1]+msg.length);
 
         if($scope.userTag.enable){
+
             var str = msg.substr($scope.userTag.startIndex);
+            console.log(str);
             $scope.tempFriendList = [];
             for(var i=0;i<$scope.friendList.length;i++){
-                if($scope.friendList[i].indexOf(str) > -1) $scope.tempFriendList.push($scope.friendList[i]);
+                var st = $scope.friendList[i].toLowerCase();
+                if(st.indexOf(str) > -1) $scope.tempFriendList.push($scope.friendList[i]);
             }
         }
         if(msg[msg.length-1] == '@'){
