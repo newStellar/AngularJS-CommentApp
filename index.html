@@ -65,9 +65,9 @@
                       </li >
                   </div>
                   <div class="col-sm-3"></div>
-                  <div class="list-group col-sm-6" ng-show ="userTag">
+                  <div class="list-group col-sm-6" ng-show ="userTag.enable">
                     <a href="#" class="list-group-item shrink"
-                       ng-repeat = "x in friendList"
+                       ng-repeat = "x in tempFriendList"
                        ng-click = "getSuggestion($index)" >{{x}}</a>
 
                   </div>
