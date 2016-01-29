@@ -14,16 +14,53 @@ app.controller("myCtrl",function($scope){
         startIndex : -1,
     };
 
-    $scope.commentList = [{author: "Nahid hasan prodhan",msg :"hi !!!! , how are you all"},{author: "AKM Rezaul Alam",msg :"hello, friends. !! "},{author: "Arifur Rahman",msg :"ASP.net is fun !!"},{author: "Glostars",msg :"How do u like our pera"}]
+    $scope.commentList = [{author: "Nahid hasan prodhan",msg :"h"},{author: "AKM Rezaul Alam",msg :"hello, friends. !! "},{author: "Arifur Rahman",msg :"ASP.net is fun !!"},{author: "Glostars",msg :"How do u like our pera"}]
     $scope.friendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
     $scope.tempFriendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
     $scope.mobile = "nexus 5";
     $scope.rowSize = 1;
     $scope.editCommentrowSize = 1;
     $scope.message = "";
+    $scope.cmntLen  =1;
+    $scope.hasSubMsg = [];
+    $scope.testMsg = "boom";
 
     var rowLen = 62,tmpMsg;
 
+
+    var init = function(){
+
+        for(var i=0;i<$scope.commentList.length;i++){
+            $scope.hasSubMsg[i] = -1;
+        }
+    }
+
+    $scope.checkCommentLength= function(len){
+
+        if(len<=$scope.cmntLen)return true;
+        return false;
+    }
+    $scope.getMsg =function(index){
+
+        if($scope.hasSubMsg[index] == 0 )return $scope.commentList[index].msg;
+        if($scope.commentList[index].msg.length <= $scope.cmntLen) {
+            $scope.hasSubMsg[index] =0;
+            return $scope.commentList[index].msg;
+         }
+        $scope.hasSubMsg[index] = 1;
+        return $scope.commentList[index].msg.substr(0,5);
+
+    }
+
+    $scope.$watch("commentList",function(){
+
+    });
+
+    $scope.showFullMsg = function(index){
+
+        $scope.hasSubMsg[index] = 0;
+        console.log("ap");
+    }
     $scope.testEnter =function(){
         var msg =$scope.message;
         console.log(tmpMsg+"__"+msg+"-->"+msg[msg.length-1]+msg.length);
@@ -55,7 +92,12 @@ app.controller("myCtrl",function($scope){
             author: author,
             msg   : $scope.message
         }
-        $scope.commentList.push(newCmnt);
+        $scope.commentList.splice(0,0,newCmnt);
+
+
+
+        if($scope.message.length <= $scope.cmntLen) $scope.hasSubMsg.splice(0,0,0);
+        else $scope.hasSubMsg.splice(0,0,1);
         $scope.message = "";
     }
     $scope.deleteComment = function (index){
@@ -79,7 +121,8 @@ app.controller("myCtrl",function($scope){
     }
     $scope.getSuggestion =function(index){
 
-        $scope.message = tmpMsg.slice(0,-1)+" "+$scope.friendList[index];
+        $scope.message = tmpMsg.slice(0,-1)+" <a href= '#'>"+$scope.friendList[index]+"</a>";
         $scope.userTag.enable =false;
     }
+
 });
