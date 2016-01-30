@@ -1,7 +1,7 @@
 
 var app = angular.module("glostar-comment-app",[]);
 
-app.controller("myCtrl",function($scope){
+app.controller("myCtrl",function($scope,$http){
 
     $scope.commentEditEnable ={
         index: -1,
@@ -14,10 +14,14 @@ app.controller("myCtrl",function($scope){
         startIndex : -1,
     };
 
-    $scope.commentList = [{author: "Nahid hasan prodhan",msg :"h"},{author: "AKM Rezaul Alam",msg :"hello, friends. !! "},{author: "Arifur Rahman",msg :"ASP.net is fun !!"},{author: "Glostars",msg :"How do u like our pera"}]
+
+	
+
+    $scope.commentList = [];
+
     $scope.friendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
     $scope.tempFriendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
-    $scope.mobile = "nexus 5";
+   
     $scope.rowSize = 1;
     $scope.editCommentrowSize = 1;
     $scope.message = "";
@@ -28,6 +32,21 @@ app.controller("myCtrl",function($scope){
     var rowLen = 62,tmpMsg;
 
 
+    var getCommentsFromServer =function(){
+    	$http({
+
+    		method  : "GET",
+    		url     : "comments.json",	
+    	}).then(function(data){
+    		console.log(JSON.stringify(data.data));
+    		$scope.commentList = data.data;
+    	},
+    	function(){
+
+    	});
+		
+    }
+    getCommentsFromServer();
     var init = function(){
 
         for(var i=0;i<$scope.commentList.length;i++){
@@ -124,5 +143,6 @@ app.controller("myCtrl",function($scope){
         $scope.message = tmpMsg.slice(0,-1)+" <a href= '#'>"+$scope.friendList[index]+"</a>";
         $scope.userTag.enable =false;
     }
+    
 
 });
