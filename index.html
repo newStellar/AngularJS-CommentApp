@@ -21,6 +21,49 @@
     padding: 5px;
 }
 
+.form-control {
+    border-radius: 0px;
+}
+.edit-option-design{
+
+    border:1px solid #E0E0E0;
+    border-radius:3px;
+    padding:1px; 
+    background-color: #FAFAFA;
+    color: #607D8B;
+    transition: 1s;
+}
+.edit-option-design:hover{
+
+    color: #4CAF50;
+    border-radius: 5px;
+   text-decoration: none;
+}
+.del-option-design{
+
+    border:1px solid #E0E0E0;
+    border-radius:3px;
+    padding:1px; 
+    background-color: #FAFAFA;
+    color: #607D8B;
+    transition: 1s;
+}
+.del-option-design:hover{
+
+    color: #E91E63;
+    border-radius: 5px;
+   text-decoration: none;
+}
+
+.emo-box{
+
+     border: 1px solid #E0E0E0;
+     border-radius: 3px; 
+     background-color: #FAFAFA;
+     margin-top: 5px;
+     padding: 5px;
+}
+
 </style>
 
 <body ng-app ="glostar-comment-app" ng-controller ="myCtrl">
@@ -29,55 +72,85 @@
             <h3 style ="text-align: center">
                 Comment App
             </h3>
+
         </div>
         <div class="row">
             <div class="col-md-3"></div>
-            <div class="col-md-6 ">
-                <ul class="list-group" style="border-radius:0px" >
+            <div class="col-md-6">
+                <ul class="list-group" style="border-radius:0px">
                     <div  style ="border: 1px solid #E0E0E0">
 
-                      <li class="list-group-item" style ="border: 0px" ng-repeat = "comment in commentList" ng-show = "checkCommentLength($index)">
-                          <p ng-hide= "checkEditStatus($index)"><a href="#">{{comment.author}} </a>:
-                              <span >
-                                  {{ getMsg($index)}}
-                                  <a  href= "#" ng-show = "hasSubMsg[$index] == 1" ng-click = "showFullMsg($index)">......see more </a>
-                              </span>
-                          </p>
-                          <div class = "row" ng-show="checkEditStatus($index)">
-                              <a class = "col-sm-12" href="#">{{comment.author}} :</a>
-                              <div class="col-sm-12">
-                                  <textarea class=" form-control" rows=3 id="comment" style= "resize:none" placeholder="Write a comment ....."
-                                              ng-model = "commentEditEnable.msg"
-                                              my-enter="addEditedComment()" >
-                                  </textarea>
-                              </div>
+			          	<li class="list-group-item" style ="border: 0px" ng-repeat = "comment in commentList" ng-show = "checkCommentLength($index)">
+                            <div class = "row">
+    			              	<div class= "col-sm-1">
+                                    <span> <img src="http://d3ba5c9iisu9nv.cloudfront.net/wp-content/uploads/2015/11/bond-james-bond.jpg" height = "35px" width = "45px"> </span>
+                                </div>    
+                                <div class = "col-sm-11">
+                                    <p > 
+        			              	  	<a href="#">{{comment.author}} </a>:
+                            
+        			                  	<span ng-hide= "checkEditStatus($index)">
+        			                      	<span  ng-show ="!cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].full"></span>
+        			                      	<span  ng-show ="cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].sub"></span>
+        			                      	<a  href= "#" ng-show = "cmntHtml[$index].hasSubMsg" ng-click = "cmntHtml[$index].hasSubMsg =false">...... </a>
+        			                 	  </span>
+                               
+        			                 	
+        			              	</p>
+                                </div>
+                            </div>
+			              	<div class = "row" ng-show="checkEditStatus($index)" >
+                            
+			                  	<div class="col-sm-12" style= "padding-top: 4px">
+			                      	<textarea class=" form-control" rows=3 id="comment" style= "resize:none" placeholder="Write a comment ....."
+			                                  ng-model = "commentEditEnable.msg"
+			                                  my-enter="addEditedComment()" >
+			                      	</textarea>
+			                 	</div>
 
-                          </div>
+			              	</div>
 
-                          <div class="row">
-                              <div class="col-sm-1"><a href="#" ng-click = "editComment($index,comment.msg)" style = "border:1px solid #E0E0E0;border-radius:3px ;padding:1px">edit</a></div>
-                              <div class="col-sm-3"><a href="#" style = "border:1px solid #E0E0E0;border-radius:3px ">private message</a></div>
-                              <div class="col-sm-1"><a href="#" ng-click ="deleteComment($index)" style = "border:1px solid #E0E0E0;border-radius:3px;padding:1px ">delete</a></div>
-                          </div>
-                      </li>
-                      <li class="list-group-item" ng-hide = "cmntLen>=commentList.length-1" style = "padding :5px; text-align:center">
-                          <a href="#" ng-click = "cmntLen = cmntLen +1"> Load more comments ....</a>
-                      </li>
-                      <li class="list-group-item">
-                          <textarea class="form-control" rows="{{rowSize}}" id="comment" style= "resize:none" placeholder="Write a comment ....."
-                                      ng-model = "message"
-                                      my-enter= "addComment('nahid')"
-                                      ng-change="testEnter()">
-                          </textarea>
-                      </li>
-                  </div>
-                  <div class="col-sm-3"></div>
-                  <div class="list-group col-sm-6" ng-show ="userTag.enable">
-                    <a href="#" class="list-group-item shrink"
-                       ng-repeat = "x in tempFriendList"
-                       ng-click = "getSuggestion($index)" >{{x}}</a>
+			              	<div class="row" style ="padding-top: 5px">
+			                  <div class="col-sm-1"><a class = "edit-option-design" href="#" ng-click = "editComment($index,comment.msg)" >edit</a></div>
+			                  
+			                  <div class="col-sm-1"><a class = "del-option-design"  href="#" ng-click ="deleteComment($index)" >delete</a></div>
+			             	 </div>
+			          	</li>
+                      	<li class="list-group-item" ng-hide = "cmntLen>=commentList.length-1" style = "padding :5px; text-align:center">
+                          	<a href="#" ng-click = "cmntLen = cmntLen +1"> Load more comments ....</a>
+                      	</li>
+                      	<li class="list-group-item">
+                            <div class = "row">
+                                <div class ="col-sm-1">
+                                    <img src="http://d3ba5c9iisu9nv.cloudfront.net/wp-content/uploads/2015/11/bond-james-bond.jpg" height = "35px"  width = "45px">
+                                </div>
+                                <div class = "col-sm-11">
+                                    <div class = "input-group">
+                                      	<textarea class="form-control" rows="{{rowSize}}" id="comment" style= "resize:none" placeholder="Write a comment ....."
+                                                  ng-model = "message"
+                                                  my-enter= "addComment('nahid')"
+                                                  ng-change="testEnter()">
+                                      	</textarea>
+                                        <span class="input-group-addon" style = "background-color: #FAFAFA " ng-click = "vanish()">
+                                            <img src="emojis/smiley.png" width = "20.5px" height = "20.5px">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                      	</li>
+                  	</div>
+                  	
+                  	<div class="col-sm-offset-3 list-group col-sm-6" ng-show ="userTag.enable">
+                        <a href="#" class="list-group-item shrink"
+                           ng-repeat = "x in tempFriendList"
+                           ng-click = "getSuggestion($index)" >{{x}}</a>
 
-                  </div>
+                  	</div>
+                    <div class = "col-sm-offset-2 col-sm-10 emo-box" ng-show = "showEmoBox">
+                        <div class = "col-sm-1" ng-repeat = "x in emoNames track by $index" ng-click = "addEmoInMsg(x)">
+                            <img ng-src="{{makeSrcforEmo($index)}}" width = "25px" height = "25px" >
+                        </div>
+                    </div>
                 </ul>
             </div>
         </div>
