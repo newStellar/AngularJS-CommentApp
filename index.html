@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="//cdn.jsdelivr.net/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="../../Bootstrap_Framework/css/bootstrap.min.css">
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.js"></script>
 
 
@@ -35,8 +35,8 @@
 }
 .edit-option-design:hover{
 
-    color: #4CAF50;
-    border-radius: 5px;
+    color: #40C4FF;
+    border-radius: 7px;
    text-decoration: none;
 }
 .del-option-design{
@@ -63,7 +63,25 @@
      margin-top: 5px;
      padding: 5px;
 }
+.frndTag-design {
 
+    padding-top: 5px;
+}
+.form-control:focus {
+    border-color: #F3E5F5;
+    box-shadow: inset 0 0px 1px #F3E5F5, 0 0 1px #F3E5F5;
+}
+
+.edit-box {
+    border-color: #F3E5F5;
+    box-shadow:  0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.edit-box:focus {
+
+    color: #6D4C41;
+    border-color: #E1BEE7;
+    box-shadow:  0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
 </style>
 
 <body ng-app ="glostar-comment-app" ng-controller ="myCtrl">
@@ -83,38 +101,40 @@
 			          	<li class="list-group-item" style ="border: 0px" ng-repeat = "comment in commentList" ng-show = "checkCommentLength($index)">
                             <div class = "row">
     			              	<div class= "col-sm-1">
-                                    <span> <img src="http://d3ba5c9iisu9nv.cloudfront.net/wp-content/uploads/2015/11/bond-james-bond.jpg" height = "35px" width = "45px"> </span>
+                                    <span> <img src="{{imgSrc[$index]}}" height = "40px" width = "45px"> </span>
                                 </div>    
-                                <div class = "col-sm-11">
-                                    <p > 
-        			              	  	<a href="#">{{comment.author}} </a>:
+                                <div class = "col-sm-11" style = "padding-left: 25px">
+                                    <div class = "row" style = "padding-left : 5px" >
+                                        <p class = "col-sm-12" style = "margin-bottom: 0px"> 
+            			              	  	<a href="#">{{comment.author}} </a>:
+                                
+            			                  	<span ng-hide= "checkEditStatus($index)">
+            			                      	<span  ng-show ="!cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].full"></span>
+            			                      	<span  ng-show ="cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].sub"></span>
+            			                      	<a  href= "#" ng-show = "cmntHtml[$index].hasSubMsg" ng-click = "cmntHtml[$index].hasSubMsg =false">...... </a>
+            			                 	  </span>
+                                   
+            			                 	
+            			              	</p>
+                                    </div>
+                                    <div class = "row" ng-show="checkEditStatus($index)" style = "padding-bottom:5px ;padding-left : 5px">
                             
-        			                  	<span ng-hide= "checkEditStatus($index)">
-        			                      	<span  ng-show ="!cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].full"></span>
-        			                      	<span  ng-show ="cmntHtml[$index].hasSubMsg" ng-bind-html= "cmntHtml[$index].sub"></span>
-        			                      	<a  href= "#" ng-show = "cmntHtml[$index].hasSubMsg" ng-click = "cmntHtml[$index].hasSubMsg =false">...... </a>
-        			                 	  </span>
-                               
-        			                 	
-        			              	</p>
+                                        <div class="col-sm-12" >
+                                            <textarea class=" form-control edit-box" rows=3 id="comment" style= "resize:none" placeholder="Write a comment ....."
+                                                      ng-model = "commentEditEnable.msg"
+                                                      my-enter="addEditedComment()" >
+                                            </textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" style = "padding-left : 5px">
+                                      <div class=" col-sm-1"><a class = "edit-option-design" href="#" ng-click = "editComment($index,comment.msg)" >edit</a></div>
+                                      
+                                      <div class="col-sm-1"><a class = "del-option-design"  href="#" ng-click ="deleteComment($index)" >delete</a></div>
+                                    </div>
                                 </div>
                             </div>
-			              	<div class = "row" ng-show="checkEditStatus($index)" >
-                            
-			                  	<div class="col-sm-12" style= "padding-top: 4px">
-			                      	<textarea class=" form-control" rows=3 id="comment" style= "resize:none" placeholder="Write a comment ....."
-			                                  ng-model = "commentEditEnable.msg"
-			                                  my-enter="addEditedComment()" >
-			                      	</textarea>
-			                 	</div>
-
-			              	</div>
-
-			              	<div class="row" style ="padding-top: 5px">
-			                  <div class="col-sm-1"><a class = "edit-option-design" href="#" ng-click = "editComment($index,comment.msg)" >edit</a></div>
-			                  
-			                  <div class="col-sm-1"><a class = "del-option-design"  href="#" ng-click ="deleteComment($index)" >delete</a></div>
-			             	 </div>
+			              	
 			          	</li>
                       	<li class="list-group-item" ng-hide = "cmntLen>=commentList.length-1" style = "padding :5px; text-align:center">
                           	<a href="#" ng-click = "cmntLen = cmntLen +1"> Load more comments ....</a>
@@ -126,7 +146,7 @@
                                 </div>
                                 <div class = "col-sm-11">
                                     <div class = "input-group">
-                                      	<textarea class="form-control" rows="{{rowSize}}" id="comment" style= "resize:none" placeholder="Write a comment ....."
+                                      	<textarea class="form-control " rows="{{rowSize}}" id="comment" style= "resize:none" placeholder="Write a comment ....."
                                                   ng-model = "message"
                                                   my-enter= "addComment('nahid')"
                                                   ng-change="testEnter()">
@@ -140,10 +160,17 @@
                       	</li>
                   	</div>
                   	
-                  	<div class="col-sm-offset-3 list-group col-sm-6" ng-show ="userTag.enable">
-                        <a href="#" class="list-group-item shrink"
-                           ng-repeat = "x in tempFriendList"
-                           ng-click = "getSuggestion($index)" >{{x}}</a>
+                  	<div class="col-sm-offset-2 col-sm-9 list-group " ng-show ="userTag.enable">
+                        <div   class = "row frndTag-design" ng-repeat = "x in tempFriendList"
+                               ng-click = "getSuggestion($index)" >
+
+                            <div class= "col-sm-1"><span> <img src="{{tempImgSrc[$index]}}" height = "30px"  width = "40px"> </span></div>
+                            <div class = "col-sm-11">
+                                <a href="#" class="list-group-item shrink">
+                                   {{x}}
+                                </a>
+                            </div>
+                        </div>
 
                   	</div>
                     <div class = "col-sm-offset-2 col-sm-10 emo-box" ng-show = "showEmoBox">

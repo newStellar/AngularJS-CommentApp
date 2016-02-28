@@ -16,10 +16,22 @@ app.controller("myCtrl",function($scope,$http,$sce){
         startIndex : -1,
     };
     $scope.emoNames = ["smiley","angry","blush","flushed","fearful","kissing_heart","sleepy","scream","sunglasses","stuck_out_tongue_winking_eye","wink", "rage", "innocent", "joy","persevere","relaxed","relieved","triumph","unamused","bicyclist","bikini","broken_heart","bear","confused","confounded","yum","trollface","beers","mask","thumbsup"];
+    $scope.imgSrc = ["https://lh6.googleusercontent.com/-2lJYGtfXKwQ/AAAAAAAAAAI/AAAAAAAB15E/JDAoqjtUysE/s0-c-k-no-ns/photo.jpg",
+    					"http://cdn.bgr.com/2015/11/bill-gates.jpg",
+    					" https://lh4.googleusercontent.com/-vz6rmzUH2-Q/AAAAAAAAAAI/AAAAAAAAP9U/xE5dalac94Y/s0-c-k-no-ns/photo.jpg",
+    					"http://a4.files.biography.com/image/upload/c_fit,cs_srgb,dpr_1.0,h_1200,q_80,w_1200/MTIwNjA4NjMzOTc0MTk1NzI0.jpg",
+    					"http://resizing.flixster.com/n6isnCaQ9Ph6KLXqW5ioq_sWQ1U=/280x250/dkpu1ddg7pbsk.cloudfront.net/rtactor/44/95/44953_ori.jpg",
+    					];
+    $scope.tempImgSrc = ["https://lh6.googleusercontent.com/-2lJYGtfXKwQ/AAAAAAAAAAI/AAAAAAAB15E/JDAoqjtUysE/s0-c-k-no-ns/photo.jpg",
+    					"http://cdn.bgr.com/2015/11/bill-gates.jpg",
+    					" https://lh4.googleusercontent.com/-vz6rmzUH2-Q/AAAAAAAAAAI/AAAAAAAAP9U/xE5dalac94Y/s0-c-k-no-ns/photo.jpg",
+    					"http://a4.files.biography.com/image/upload/c_fit,cs_srgb,dpr_1.0,h_1200,q_80,w_1200/MTIwNjA4NjMzOTc0MTk1NzI0.jpg",
+    					"http://resizing.flixster.com/n6isnCaQ9Ph6KLXqW5ioq_sWQ1U=/280x250/dkpu1ddg7pbsk.cloudfront.net/rtactor/44/95/44953_ori.jpg",
+    					];
     var msgWithTag =  false;
     var rowLen = 62, rowDiv,tmpMsg;
 
-	
+	var subStrOfTag;
     var emoListBeforeAdd = [];
     $scope.commentList = [];
     $scope.friendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
@@ -60,9 +72,10 @@ app.controller("myCtrl",function($scope,$http,$sce){
     var friendTag = function(msg){
     	
 		for(var i=0 ;i<$scope.friendList.length;i++){
-    		if( msg.indexOf($scope.friendList[i])> -1 )
-    			msg = msg.replace($scope.friendList[i] , " <a href= '#'>"+$scope.friendList[i]+"</a> ");
-	    			    		
+
+			var frnd = "`"+$scope.friendList[i]+"`";
+    		if( msg.indexOf(frnd)> -1 )
+    			msg = msg.replace(frnd , " <a href= '#'>"+$scope.friendList[i]+"</a> "); /* never add any character with friendlist in anchor tag */	    			    		
     	}    	
     	return msg;
     }
@@ -137,13 +150,7 @@ app.controller("myCtrl",function($scope,$http,$sce){
     }
     $scope.getMsg =function(index){
 
-        var flag; 
-        
-        if($scope.commentList[index].msg.length <= $scope.cmntMsgLen){
-        	flag =false;
-        }
-
-        else flag = true;
+        var flag = ($scope.commentList[index].msg.length <= $scope.cmntMsgLen)?false:true;
         
         var ret = $scope.commentList[index].msg.substr(0,$scope.cmntMsgLen);
         ret = "<span>"+ret+"</span>"
@@ -167,22 +174,30 @@ app.controller("myCtrl",function($scope,$http,$sce){
 
         //console.log(tmpMsg+"__"+msg+"-->"+msg[msg.length-1]+msg.length);
 
-        if($scope.userTag.enable){
-
-            var str = msg.substr($scope.userTag.startIndex);
-            console.log(str);
-            $scope.tempFriendList = [];
-            for(var i=0;i<$scope.friendList.length;i++){
-                var st = $scope.friendList[i].toLowerCase();
-                if(st.indexOf(str) > -1) $scope.tempFriendList.push($scope.friendList[i]);
-            }
-        }
         if(msg[msg.length-1] == '@'){
 
             $scope.userTag.enable =true;
             $scope.userTag.startIndex = msg.length;
         }
+        if($scope.userTag.enable){
+
+            subStrOfTag = msg.substr($scope.userTag.startIndex);
+            console.log(msg + "___"+subStrOfTag);
+            $scope.tempFriendList = [];
+            $scope.tempImgSrc = [];
+            for(var i=0;i<$scope.friendList.length;i++){
+
+                var st = $scope.friendList[i].toLowerCase();
+                if(st.indexOf(subStrOfTag) > -1) {
+                	$scope.tempFriendList.push($scope.friendList[i]);
+                	$scope.tempImgSrc.push($scope.imgSrc[i]);
+                }
+            }
+        }
+    	
         if(tmpMsg!=null && msg[msg.length-2]!="@" &&tmpMsg[tmpMsg.length-1] == "@")$scope.userTag.enable =false;
+        
+        
 
         
          tmpMsg = $scope.message;
@@ -191,15 +206,18 @@ app.controller("myCtrl",function($scope,$http,$sce){
     $scope.$watch("message",function(a,b){
 
     	msg =a;
+    	
     	if(msg.length%rowLen == 0  || (Math.floor(msg.length/rowLen)> rowDiv )) {
             $scope.rowSize = (msg.length/rowLen)+1;
             rowDiv = Math.floor(msg.length/rowLen);
         }
+
+
     });
     $scope.addComment = function(author){
 
     	if($scope.message.length === 0)return;
-    	//console.log($scope.message.length);
+    	console.log("here goes -->>"+$scope.message.length);
     	var msg = $scope.message;
     	msg =  friendTag(msg);
         
@@ -243,7 +261,9 @@ app.controller("myCtrl",function($scope,$http,$sce){
     }
     $scope.addEditedComment =function(){
 
+    	if($scope.commentEditEnable.msg == "")return ;
         var indx = $scope.commentEditEnable.index;
+        $scope.commentEditEnable.msg = friendTag($scope.commentEditEnable.msg);
         $scope.commentList[indx].msg = converMsgToPersonView ( $scope.commentEditEnable.msg );
         $scope.cmntHtml[indx].full = $sce.trustAsHtml(converMsgToPersonView ( $scope.commentEditEnable.msg ));
         $scope.commentEditEnable.status = false;
@@ -253,7 +273,8 @@ app.controller("myCtrl",function($scope,$http,$sce){
     }
     $scope.getSuggestion =function(index){
 
-        $scope.message = tmpMsg.slice(0,-1)+" "+$scope.friendList[index];
+
+        $scope.message = $scope.message.replace("@"+subStrOfTag," `"+$scope.tempFriendList[index]+"` ");
         $scope.userTag.enable =false;
     }
     $scope.addEmoInMsg = function(emo){
