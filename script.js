@@ -14,6 +14,7 @@ app.controller("myCtrl",function($scope,$http,$sce){
     $scope.userTag = {
         enable     : false,
         startIndex : -1,
+        endIndex   : -1
     };
     $scope.emoNames = ["smiley","angry","blush","flushed","fearful","kissing_heart","sleepy","scream","sunglasses","stuck_out_tongue_winking_eye","wink", "rage", "innocent", "joy","persevere","relaxed","relieved","triumph","unamused","bicyclist","bikini","broken_heart","bear","confused","confounded","yum","trollface","beers","mask","thumbsup"];
     $scope.imgSrc = ["https://lh6.googleusercontent.com/-2lJYGtfXKwQ/AAAAAAAAAAI/AAAAAAAB15E/JDAoqjtUysE/s0-c-k-no-ns/photo.jpg",
@@ -31,7 +32,7 @@ app.controller("myCtrl",function($scope,$http,$sce){
     var msgWithTag =  false;
     var rowLen = 62, rowDiv,tmpMsg;
 
-	var subStrOfTag;
+	var subStrOfTag, tagFlag=false;
     var emoListBeforeAdd = [];
     $scope.commentList = [];
     $scope.friendList = ["Barak obama","Billgates","Shahrukh khan","john smith","will smith"];
@@ -172,32 +173,52 @@ app.controller("myCtrl",function($scope,$http,$sce){
       
         var msg =$scope.message;
 
-        //console.log(tmpMsg+"__"+msg+"-->"+msg[msg.length-1]+msg.length);
+        console.log();
 
-        if(msg[msg.length-1] == '@'){
+        if(msg.indexOf("@") == -1){
+        	$scope.userTag.enable =false;
+        	$scope.userTag.endIndex =0;
+        	tagFlag = false;
+        }
+        
+        if(msg.indexOf("@")>-1){
 
             $scope.userTag.enable =true;
-            $scope.userTag.startIndex = msg.length;
+            $scope.userTag.startIndex = msg.indexOf("@")+1;
+            $scope.message.replace("@","@ ");
         }
         if($scope.userTag.enable){
 
-            subStrOfTag = msg.substr($scope.userTag.startIndex);
-            console.log(msg + "___"+subStrOfTag);
+        	console.log("tmp:"+tmpMsg.length +" msg:"+ msg.length);
+        	
+
+        	if(tmpMsg.length > msg.length){$scope.userTag.endIndex --; console.log("removed");}
+            else {
+            	if(tagFlag)$scope.userTag.endIndex++;
+            	tagFlag=true;
+            	
+            }
+
+            subStrOfTag = msg.substring($scope.userTag.startIndex, $scope.userTag.startIndex+ $scope.userTag.endIndex);
+            
+            
+
+            console.log("_tag:"+subStrOfTag+"_indx: "+$scope.userTag.startIndex);
             $scope.tempFriendList = [];
             $scope.tempImgSrc = [];
             for(var i=0;i<$scope.friendList.length;i++){
 
                 var st = $scope.friendList[i].toLowerCase();
-                if(st.indexOf(subStrOfTag) > -1) {
+                var tmp = subStrOfTag.toLowerCase();
+                if(st.indexOf(tmp) > -1) {
                 	$scope.tempFriendList.push($scope.friendList[i]);
                 	$scope.tempImgSrc.push($scope.imgSrc[i]);
                 }
             }
         }
     	
-        if(tmpMsg!=null && msg[msg.length-2]!="@" &&tmpMsg[tmpMsg.length-1] == "@")$scope.userTag.enable =false;
-        
-        
+        //if(tmpMsg!=null && msg[msg.length-2]!="@" &&tmpMsg[tmpMsg.length-1] == "@")$scope.userTag.enable =false;
+
 
         
          tmpMsg = $scope.message;
@@ -207,6 +228,7 @@ app.controller("myCtrl",function($scope,$http,$sce){
 
     	msg =a;
     	
+    
     	if(msg.length%rowLen == 0  || (Math.floor(msg.length/rowLen)> rowDiv )) {
             $scope.rowSize = (msg.length/rowLen)+1;
             rowDiv = Math.floor(msg.length/rowLen);
@@ -276,6 +298,8 @@ app.controller("myCtrl",function($scope,$http,$sce){
 
         $scope.message = $scope.message.replace("@"+subStrOfTag," `"+$scope.tempFriendList[index]+"` ");
         $scope.userTag.enable =false;
+        $scope.userTag.endIndex =0;
+        tagFlag =false;
     }
     $scope.addEmoInMsg = function(emo){
     	$scope.vanish();
